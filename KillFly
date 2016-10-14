@@ -1,0 +1,170 @@
+@@ -0,0 +1,169 @@
+package KillFly;
+
+public class KillFly {
+	
+	static int[][] computerAirport = new int[10][10];
+	static int[][] playerAirport = new int[10][10];
+	
+	static int playerHealth = 5;
+	static int computerHealth = 5;
+	
+	public static int[] createPoint() {  //�������һ�������ķ���
+		int[] point = new int[2];
+		//�����������Math.random():0.0~1.0
+		int x = (int)(Math.random() * 10);
+		int y = (int)(Math.random() * 10);
+		point[0] = x;
+		point[1] = y;
+		return point;
+	}
+	
+	public static boolean pointIsUseable(int[] heart) {  //�ж�һ�����ĵ��ܷ��������ɷɻ�
+		boolean useable = true;
+		int x = heart[0];
+		int y = heart[1];
+		//�жϻ�ͷ
+		if(x - 2 < 0) {
+			useable = false;
+		}
+		//�жϻ�β
+		if(x + 2 > 9) {
+			useable = false;
+		}
+		//�ж������
+		if(y - 2 < 0) {
+			useable = false;
+		}
+		//�ж��һ���
+		if(y + 2 > 9) {
+			useable = false;
+		}
+		return useable;
+	}
+	
+	public static void drawFly(int[][] airport) {  //���ɻ��ķ���
+		int[] heart;
+		do {
+			heart = createPoint();
+		}while(!pointIsUseable(heart));
+//		System.out.println("��ǰ���õ㣺" + heart[0] + ":" + heart[1]);
+		
+		int x = heart[0];
+		int y = heart[1];
+		
+		//������
+		airport[x][y] = 1;
+		//������
+		airport[x][y-1] = 1;
+		airport[x][y-2] = 1;
+		//���ҳ��
+		airport[x][y+1] = 1;
+		airport[x][y+2] = 1;
+		//����ͷ
+		airport[x-1][y] = 1;
+		airport[x-2][y] = 1;
+		//����β
+		airport[x+1][y] = 1;
+		airport[x+2][y] = 1;
+		//��β��
+		airport[x+2][y-1] = 1;
+		airport[x+2][y+1] = 1;
+	}
+	
+	public static void win() {  //�жϳ����Ƿ�ý�����ʤ���������жϣ�
+		if(playerHealth == 0) {
+			System.out.println("�����ˣ�������Ű�ˣ�");
+			System.out.println("��Ҳ�״��");
+			showAirport(playerAirport);
+			System.exit(0);
+		}else if(computerHealth == 0) {
+			System.out.println("��ϲ�����Ը��������ˣ�");
+			System.out.println("���Բ�״��");
+			showAirport(computerAirport);
+			System.exit(0);
+		}
+	}
+	
+	public static void showAirport(int[][] airport) {
+		for (int[] is : airport) {
+			for (int i : is) {
+				System.out.print(i + " ");
+			}
+			System.out.println();
+		}
+	}
+	
+	public static void play() throws Exception {
+		
+		System.out.println("��Ϸ��ʼ��");
+		
+		int[] point = new int[2];
+		int x;
+		int y;
+		while(true) {
+			System.out.println("���Եķɻ�����");
+			showAirport(computerAirport);
+			System.out.println("----------");
+			//1������һ���㣬���ں�ը���Էɻ�
+			System.out.println("�������кţ�");
+			point[0] = Tools.inputInt();
+			System.out.println("�������кţ�");
+			point[1] = Tools.inputInt();
+			//2����ը���Էɻ�
+			x = point[0];
+			y = point[1];
+			if(computerAirport[x][y] == 1) {  //��ը��
+				System.out.println("������ǹ����Ѫ��");
+				computerHealth--;
+				computerAirport[x][y] = 2;  //��Ǳ�ը���ĵط�
+			}else if(computerAirport[x][y] == 0) {  //ûը��
+				System.out.println("������ը���ˣ�");
+				computerAirport[x][y] = 2;
+			}else if(computerAirport[x][y] == 2) {  //����
+				System.out.println("��������������Ȩ��");
+			}
+			//3�����ʤ���ж�
+			win();
+			
+			System.out.println("��ҵķɻ�����");
+			showAirport(playerAirport);
+			System.out.println("----------");
+			//4��������������㣬ը���
+			point = createPoint();  //����������ɵĵ���д���
+			//5����ը��ҷɻ�
+			x = point[0];
+			y = point[1];
+			if(playerAirport[x][y] == 1) {  //��ը��
+				System.out.println("�����ǹ����Ѫ��");
+				playerHealth--;
+				playerAirport[x][y] = 2;  //��Ǳ�ը���ĵط�
+			}else if(playerAirport[x][y] == 0) {  //ûը��
+				System.out.println("���Ա�����ը���ˣ�");
+				playerAirport[x][y] = 2;
+			}else if(playerAirport[x][y] == 2) {  //����
+				System.out.println("����������������Ȩ��");
+			}
+			//6������ʤ���ж�
+			win();
+		}
+		
+	}
+	
+	public static void init() {  //��ʼ���ɻ����ķ���
+		System.out.println("���ڴ�����ҷɻ�������");
+		drawFly(playerAirport);
+		System.out.println("��ҷɻ���:");
+		showAirport(playerAirport);
+		System.out.println("----------");
+		System.out.println("���ڴ������Էɻ�������");
+		drawFly(computerAirport);
+		System.out.println("���Էɻ���:");
+		showAirport(computerAirport);
+	}
+	
+	public static void main(String[] args) throws Exception {
+		init();
+		play();
+	}
+	
+}
